@@ -13,7 +13,8 @@ def now():
 #sample = "Minbias_PU140"
 sample = "Minbias_PU200"
 #InputDir = "/data7/Users/jhkim/PhaseIISpring17D/Ntuple_Minbias140PU/PhaseIISpring17D_Minbias"
-InputDir = "/data7/Users/jhkim/PhaseIISpring17D/Ntuple_Minbias200PU"
+#InputDir = "/data7/Users/jhkim/PhaseIISpring17D/Ntuple_Minbias200PU"
+InputDir = "/data7/Users/jhkim/PhaseIIFall17D/SingleNeutrino_200PU"
 
 os.system("ls " + InputDir + "/*.root > " + "./inputlist.txt") # read input root files 
 
@@ -34,7 +35,7 @@ number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir
 
 print "Job has " + str(number_of_files) + " files to process:"
 
-number_of_cores = 60 
+number_of_cores = 120 
 
 # determine the # of files per job
 nfilesperjobs= 0

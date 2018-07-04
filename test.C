@@ -26,15 +26,15 @@ void test::Loop()
    //const double PiX_PiX_deta_width_[27] = {0.0005, 0.0007, 0.0009, 0.0011, 0.0013, 0.0015, 0.0017, 0.0019, 0.0021, 0.0023, 0.0025, 0.0027, 0.0029, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010, 0.02, 0.05};
 
    //const double EM_PiX_dphi_width_[9] = {0.025, 0.03, 0.031, 0.033, 0.035, 0.037, 0.039, 0.04, 0.05};
-   const double EM_PiX_dphi_width_[9] = {0.025, 0.05, 0.031, 0.033, 0.035, 0.037, 0.039, 0.04, 0.05};
+   const double EM_PiX_dphi_width_[9] = {0.025, 0.04, 0.031, 0.033, 0.035, 0.037, 0.039, 0.04, 0.05};
    //const double EM_PiX_deta_width_[9] = {0.015, 0.02, 0.031, 0.033, 0.035, 0.037, 0.039, 0.04, 0.05};
    const double EM_PiX_deta_width_[9] = {0.015, 0.03, 0.031, 0.033, 0.035, 0.037, 0.039, 0.04, 0.05};
 
    //const double PiX_PiX_dphi_width_[9] = {0.0025, 0.003, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
-   const double PiX_PiX_dphi_width_[9] = {0.0025, 0.005, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
+   const double PiX_PiX_dphi_width_[9] = {0.0025, 0.0035, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
    //const double PiX_PiX_deta_width_[9] = {0.0045, 0.003, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
-   const double PiX_PiX_deta_width_[9] = {0.0045, 0.009, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
-//   nentries = 500;
+   const double PiX_PiX_deta_width_[9] = {0.0045, 0.0055, 0.0031, 0.0033, 0.0035, 0.0037, 0.0039, 0.004, 0.005};
+   nentries = 2000;
    for (Long64_t jentry=0; jentry<nentries;jentry++) { //nentries
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
@@ -141,26 +141,25 @@ void test::Loop()
       if(EgEt < 8) continue;
 
       eta_region = 0; // initialize variable 
-      if( fabs(EgEta) < 0.8 ) eta_region =1;
-      if( fabs(EgEta) < 1.4 && fabs(EgEta) > 0.8 ) eta_region =2;
-      if( fabs(EgEta) < 1.5 && fabs(EgEta) > 1.4 ) eta_region =3;
-      if( fabs(EgEta) < 2.5 && fabs(EgEta) > 1.9 ) eta_region =4;
-      //if( fabs(EgEta) < 2.8 && fabs(EgEta) > 2.5 ) eta_region =5;
-      //if( eta_region != 4 ) continue;
-      if( fabs(EgEta) > 1.479 ) continue;
-
+      if( fabs(EgEta) <= 0.8 ) eta_region =1;
+      if( fabs(EgEta) <= 1.4 && fabs(EgEta) > 0.8 ) eta_region =2;
+      if( fabs(EgEta) <= 1.8 && fabs(EgEta) > 1.4 ) eta_region =3;
+      if( fabs(EgEta) <= 2.7 && fabs(EgEta) > 1.8 ) eta_region =4;
+      if( fabs(EgEta) <= 3.0 && fabs(EgEta) > 2.7 ) eta_region =5;
+      if( fabs(EgEta) > 3. ) continue;
 
       pass_egobjects_check = 1;
       ntnEg2++;
       ntEgEt.push_back(EgEt);
       ntEgEta.push_back(EgEta);
-
       
       // set regin of interest
       // for η < 1.3, Δφ < 0.05 
-      if(eta_region==1)SetROI(2); 
-      else SetROI(eta_region);
-      SetROI(1);
+      //if(eta_region==1)SetROI(2); 
+      //else SetROI(eta_region);
+      //SetROI(1);
+
+      SetROI(eta_region);
 
       // initialize pixel hit variables
       first_layer_hits.clear();
@@ -206,6 +205,7 @@ void test::Loop()
        //SetSingalBoundary(eta_region);
        if(eta_region == 1) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta], EM_PiX_deta_width_[nth_eg_pix_deta], PiX_PiX_dphi_width_[nth_eg_pix_deta], PiX_PiX_deta_width_[nth_eg_pix_deta]);
        else if(eta_region == 2) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta+1], EM_PiX_deta_width_[nth_eg_pix_deta+1], PiX_PiX_dphi_width_[nth_eg_pix_deta+1], PiX_PiX_deta_width_[nth_eg_pix_deta+1]);
+       //if(eta_region >= 2) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta+1], EM_PiX_deta_width_[nth_eg_pix_deta+1], PiX_PiX_dphi_width_[nth_eg_pix_deta+1], PiX_PiX_deta_width_[nth_eg_pix_deta+1]);
        else SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta], EM_PiX_deta_width_[nth_eg_pix_deta], PiX_PiX_dphi_width_[nth_eg_pix_deta], PiX_PiX_deta_width_[nth_eg_pix_deta]);
 
        // PixTRK algorithm 
@@ -220,9 +220,10 @@ void test::Loop()
        second_layer_missing = 0;
        first_layer_missing = 0;
 
-
-      // require 4 pixel hits
       bool PixTrkFourHits = false;
+
+/*
+      // require 4 pixel hits
       if(isFourHits){
 
          for( int k=0; k < layers[1]; k++){
@@ -326,6 +327,505 @@ void test::Loop()
             }
          }
       }
+*/
+       // loop over every 3 out of 4 pixel combination 
+       for( std::vector<int>::iterator first_hit = hitted_layers.begin(); first_hit != hitted_layers.end(); first_hit++){
+          for ( std::vector<int>::iterator second_hit = first_hit+1; second_hit != hitted_layers.end(); second_hit++){
+              for ( std::vector<int>::iterator third_hit = second_hit+1; third_hit != hitted_layers.end(); third_hit++){
+                 pass_count_EleorPos = 0;
+                 pass_count_Ele = 0;
+                 pass_count_Pos = 0;              
+                 
+                 // loop over every pixel hits in the given pixel combination
+                 for( int k=0; k < layers[*first_hit]; k++){
+                    for( int i=0; i < layers[*second_hit]; i++){
+                        _pass_Ele = 0, _pass_Pos = 0;
+                        L012_pass_Ele = 0, L012_pass_Pos = 0;
+                        L013_pass_Ele = 0, L013_pass_Pos = 0;
+                        L023_pass_Ele = 0, L023_pass_Pos = 0;
+                      
+                        // check L012 dphi, L013 dphi, L023 dphi
+                        if( *first_hit == 1 && *second_hit == 2 )
+                          TriggeringWith_1st2ndPixel(k,i);
+
+                        if( *first_hit == 1 && *second_hit == 3 )
+                          TriggeringWith_1st3rdPixel(k,i);
+
+                        if( *first_hit == 2 && *second_hit == 3 )
+                          TriggeringWith_2nd3rdPixel(k,i);
+
+                        // skip only if both _pass_Ele and _pass_Pos are 0 i.e., both electron and positron signal window are not satisfied
+                        if( !_pass_Ele && !_pass_Pos ) continue;
+
+                        for( int j=0; j < layers[*third_hit]; j++){
+                            all_cut_pass_Ele = 0, all_cut_pass_Pos = 0;
+                            withoutEM_pass_Ele = 0, withEM_pass_Ele = 0;
+                            withoutEM_pass_Pos = 0, withEM_pass_Pos = 0;
+
+                            L012_pass_Ele = 0, L012_pass_Pos = 0;
+                            L013_pass_Ele = 0, L013_pass_Pos = 0;
+                            L014_pass_Ele = 0, L014_pass_Pos = 0;
+                            L023_pass_Ele = 0, L023_pass_Pos = 0;
+                            L024_pass_Ele = 0, L024_pass_Pos = 0;
+                            L034_pass_Ele = 0, L034_pass_Pos = 0;
+                            L123_pass_Ele = 0, L123_pass_Pos = 0;
+                            L124_pass_Ele = 0, L124_pass_Pos = 0;
+                            L134_pass_Ele = 0, L134_pass_Pos = 0;
+                            L234_pass_Ele = 0, L234_pass_Pos = 0;
+
+                            L12_EM_Ele = 0, L12_EM_Pos = 0;
+                            L13_EM_Ele = 0, L13_EM_Pos = 0;
+                            L14_EM_Ele = 0, L14_EM_Pos = 0;
+                            L23_EM_Ele = 0, L23_EM_Pos = 0;
+                            L24_EM_Ele = 0, L24_EM_Pos = 0;
+                            L34_EM_Ele = 0, L34_EM_Pos = 0;
+
+            	            dPhi = StandaloneDPhi( *first_hit, *second_hit, *third_hit, k, i, j );
+                            dEta = StandaloneDEta( *first_hit, *second_hit, *third_hit, k, i, j );
+                            dR = sqrt( pow(dEta,2) + pow(dPhi,2) );
+
+                              if( *first_hit == 1 && *second_hit == 2 && *third_hit == 3 ){ // for efficiency counting  !!caution of the position of this codition
+                                // This is for the case that the first hit is in the first pixel layer and the second hit is in the second pixel layer and the third hit is in the third layer. 
+                                TriggeringWithout_4thPixel(k, i, j);
+
+                                if( (first_layer_hits_Ele_or_Pos[k] == 1 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (second_layer_hits_Ele_or_Pos[i] == 1 || second_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[j] == 1 || third_layer_hits_Ele_or_Pos[j] ==3)){
+                                      if(L012_pass_Ele && L013_pass_Ele && L023_pass_Ele && L123_pass_Ele && L12_EM_Ele && L13_EM_Ele && L23_EM_Ele)
+                                         all_cut_pass_Ele = 1; 
+                                      if(L012_pass_Ele && L013_pass_Ele && L023_pass_Ele && L123_pass_Ele)
+                                         withoutEM_pass_Ele = 1;
+                                      if(L12_EM_Ele && L13_EM_Ele && L23_EM_Ele)
+                                         withEM_pass_Ele = 1;
+                                }
+ 
+                                if( (first_layer_hits_Ele_or_Pos[k] == 2 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (second_layer_hits_Ele_or_Pos[i] == 2 || second_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[j] == 2 || third_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L012_pass_Pos && L013_pass_Pos && L023_pass_Pos && L123_pass_Pos && L12_EM_Pos && L13_EM_Pos && L23_EM_Pos) all_cut_pass_Pos = 1; 
+                                    if(L012_pass_Pos && L013_pass_Pos && L023_pass_Pos && L123_pass_Pos) withoutEM_pass_Pos = 1;
+                                    if(L12_EM_Pos && L13_EM_Pos && L23_EM_Pos) withEM_pass_Pos = 1;
+                                 }
+
+                               if( all_cut_pass_Ele || all_cut_pass_Pos){
+                                  pass_count_wo4thPix = 1;
+                                }
+
+                                if( withoutEM_pass_Ele || withoutEM_pass_Pos) {
+                                  woEM_pass_count_wo4thPix++;
+                                }
+                                if( withEM_pass_Ele || withEM_pass_Pos) {
+                                  wEM_pass_count_wo4thPix++;
+                                }
+
+                                if(skip){
+                                if( all_cut_pass_Ele == 1 || all_cut_pass_Pos == 1 ){ // if pass exit loop
+                                  cout << "without fourth layer: " << (k+1) * (i+1) * ( j+1) << endl;
+            		          k = layers[*first_hit];
+                                  i = layers[*second_hit];
+                                  j = layers[*third_hit]; 
+                                  fourth_layer_missing = 1;
+                   		 }
+                               }
+
+                              }
+                              if( *first_hit == 1 && *second_hit == 2 && *third_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                                // This is for the case that the first hit is in the first pixel layer and the second is in the second layer and the third hit is in the fourth layer.
+                                TriggeringWithout_3rdPixel(k, i, j);
+
+                                if( (first_layer_hits_Ele_or_Pos[k] == 1 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (second_layer_hits_Ele_or_Pos[i] == 1 || second_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 1 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L012_pass_Ele && L014_pass_Ele && L024_pass_Ele && L124_pass_Ele && L12_EM_Ele && L14_EM_Ele && L24_EM_Ele) all_cut_pass_Ele = 1;
+                                    if(L012_pass_Ele && L014_pass_Ele && L024_pass_Ele && L124_pass_Ele) withoutEM_pass_Ele = 1;
+                                    if(L12_EM_Ele && L14_EM_Ele && L24_EM_Ele) withEM_pass_Ele = 1;
+                                } 
+
+                                if( (first_layer_hits_Ele_or_Pos[k] == 2 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (second_layer_hits_Ele_or_Pos[i] == 2 || second_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 2 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L012_pass_Pos && L014_pass_Pos && L024_pass_Pos && L124_pass_Pos && L12_EM_Pos && L14_EM_Pos && L24_EM_Pos) all_cut_pass_Pos = 1; 
+                                    if(L012_pass_Pos && L014_pass_Pos && L024_pass_Pos && L124_pass_Pos) withoutEM_pass_Pos = 1;
+                                    if(L12_EM_Pos && L14_EM_Pos && L24_EM_Pos) withEM_pass_Pos = 1;
+                                }
+
+                                if( all_cut_pass_Ele || all_cut_pass_Pos ){
+                                  pass_count_wo3thPix = 1;
+                                }
+                                if( withoutEM_pass_Ele || withoutEM_pass_Pos) {
+                                  woEM_pass_count_wo3thPix++;
+                                }
+                                if( withEM_pass_Ele || withEM_pass_Pos) {
+                                  wEM_pass_count_wo3thPix++;
+                                }
+
+                                if(skip){
+                                if( all_cut_pass_Ele == 1 || all_cut_pass_Pos == 1 ){ // if pass exit the for loops
+                                  cout << "without third layer: " << (k+1) * (i+1) * ( j+1) << endl;
+            		          k = layers[*first_hit];
+                                  i = layers[*second_hit];
+                                  j = layers[*third_hit]; 
+            	     	          third_layer_missing = 1;
+                   		 }
+                               }
+                              }
+                              if( *first_hit == 1 && *second_hit == 3 && *third_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                                TriggeringWithout_2ndPixel(k, i, j);
+
+                                if( (first_layer_hits_Ele_or_Pos[k] == 1 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[i] == 1 || third_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 1 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L013_pass_Ele && L014_pass_Ele && L034_pass_Ele && L134_pass_Ele && L13_EM_Ele && L14_EM_Ele && L34_EM_Ele)all_cut_pass_Ele = 1; 
+                                    if(L013_pass_Ele && L014_pass_Ele && L034_pass_Ele && L134_pass_Ele) withoutEM_pass_Ele = 1;
+                                    if(L13_EM_Ele && L14_EM_Ele && L34_EM_Ele) withEM_pass_Ele = 1;
+                                }
+
+                                if( (first_layer_hits_Ele_or_Pos[k] == 2 || first_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[i] == 2 || third_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 2 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L013_pass_Pos && L014_pass_Pos && L034_pass_Pos && L134_pass_Pos && L13_EM_Pos && L14_EM_Pos && L34_EM_Pos) all_cut_pass_Pos = 1; 
+                                    if(L013_pass_Pos && L014_pass_Pos && L034_pass_Pos && L134_pass_Pos) withoutEM_pass_Pos = 1;
+                                    if(L13_EM_Pos && L14_EM_Pos && L34_EM_Pos) withEM_pass_Pos = 1;
+                                 }
+
+                                if( all_cut_pass_Ele || all_cut_pass_Pos){
+                                  pass_count_wo2thPix = 1;
+                                }
+                                if( withoutEM_pass_Ele || withoutEM_pass_Pos) {
+                                  woEM_pass_count_wo2thPix++;
+                                }
+
+                                if( withEM_pass_Ele || withEM_pass_Pos) {
+                                  wEM_pass_count_wo2thPix++;
+                                }
+
+                                if(skip){
+                                if( all_cut_pass_Ele == 1 || all_cut_pass_Pos == 1 ){ // if pass exit the for loops
+                                  cout << "without second layer: " << (k+1) * (i+1) * ( j+1) << endl;
+            		          k = layers[*first_hit];
+                                  i = layers[*second_hit];
+                                  j = layers[*third_hit]; 
+                                  second_layer_missing = 1; 
+                   		 }
+                               }
+                              }
+                              if( *first_hit == 2 && *second_hit == 3 && *third_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                                TriggeringWithout_1stPixel(k, i, j);
+
+                                if( (second_layer_hits_Ele_or_Pos[k] == 1 || second_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[i] == 1 || third_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 1 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L023_pass_Ele && L024_pass_Ele && L034_pass_Ele && L234_pass_Ele && L23_EM_Ele && L24_EM_Ele && L34_EM_Ele) all_cut_pass_Ele = 1;
+                                    if(L023_pass_Ele && L024_pass_Ele && L034_pass_Ele && L234_pass_Ele) withoutEM_pass_Ele = 1;
+                                    if(L23_EM_Ele && L24_EM_Ele && L34_EM_Ele) withEM_pass_Ele = 1;
+                                } 
+
+                                if( (second_layer_hits_Ele_or_Pos[k] == 2 || second_layer_hits_Ele_or_Pos[k] ==3) &&
+            			    (third_layer_hits_Ele_or_Pos[i] == 2 || third_layer_hits_Ele_or_Pos[i] ==3) &&
+            			    (fourth_layer_hits_Ele_or_Pos[j] == 2 || fourth_layer_hits_Ele_or_Pos[j] ==3)){
+                                    if(L023_pass_Pos && L024_pass_Pos && L034_pass_Pos && L234_pass_Pos && L23_EM_Pos && L24_EM_Pos && L34_EM_Pos) all_cut_pass_Pos = 1; 
+                                    if(L023_pass_Pos && L024_pass_Pos && L034_pass_Pos && L234_pass_Pos) withoutEM_pass_Pos = 1;
+                                    if(L23_EM_Pos && L24_EM_Pos && L34_EM_Pos) withEM_pass_Pos = 1;
+                                }
+
+
+                                if( all_cut_pass_Ele || all_cut_pass_Pos){
+                                  pass_count_wo1thPix = 1;
+                                }
+                                if( withoutEM_pass_Ele || withoutEM_pass_Pos) {
+                                  woEM_pass_count_wo1thPix++;
+                                }
+                                if( withEM_pass_Ele || withEM_pass_Pos) {
+                                  wEM_pass_count_wo1thPix++;
+                                }
+                    
+                                if(skip){
+                                if( all_cut_pass_Ele == 1 || all_cut_pass_Pos == 1 ){ // if pass exit the for loops
+                                  cout << "without first layer: " << (k+1) * (i+1) * ( j+1) << endl;
+            		          k = layers[*first_hit];
+                                  i = layers[*second_hit];
+                                  j = layers[*third_hit]; 
+                                  first_layer_missing = 1;
+                   		 } 
+                               }
+                              }
+
+                         if( all_cut_pass_Ele == 1 || all_cut_pass_Pos == 1) {pass_count_EleorPos++; pass_count = 1;}
+                         if( all_cut_pass_Ele == 1 ) {pass_count_Ele++;}
+                         if( all_cut_pass_Pos == 1 ) pass_count_Pos++;
+                         if( withoutEM_pass_Ele == 1 ) withoutEM_count_Ele = 1;
+                         if( withEM_pass_Ele == 1 ) withEM_count_Ele = 1;
+                       } // loop for third layer hits
+                   } // loop for second layer hits       
+                 } // loop for first layer hits
+
+                 pass_Ele.push_back(pass_count_Ele);
+                 pass_Pos.push_back(pass_count_Pos);
+                 pass_ElePos.push_back(pass_count_EleorPos);
+          }          
+        }
+      }
+
+     if( eta_region == 2 && pass_count == false) {
+       for( std::vector<int>::iterator first_hit = hitted_layers.begin(); first_hit != hitted_layers.end(); first_hit++){
+          for ( std::vector<int>::iterator second_hit = first_hit+1; second_hit != hitted_layers.end(); second_hit++){
+
+                 // loop over every pixel hits in the given pixel combination
+                 for( int k=0; k < layers[*first_hit]; k++){
+                    for( int i=0; i < layers[*second_hit]; i++){
+                        _pass_Ele = 0, _pass_Pos = 0;
+
+                        L012_pass_Ele = 0, L012_pass_Pos = 0;
+                        L013_pass_Ele = 0, L013_pass_Pos = 0;
+                        L014_pass_Ele = 0, L014_pass_Pos = 0;
+                        L023_pass_Ele = 0, L023_pass_Pos = 0;
+                        L024_pass_Ele = 0, L024_pass_Pos = 0;
+                        L034_pass_Ele = 0, L034_pass_Pos = 0;
+                        L123_pass_Ele = 0, L123_pass_Pos = 0;
+                        L124_pass_Ele = 0, L124_pass_Pos = 0;
+                        L134_pass_Ele = 0, L134_pass_Pos = 0;
+                        L234_pass_Ele = 0, L234_pass_Pos = 0;
+
+                        L12_EM_Ele = 0, L12_EM_Pos = 0;
+                        L13_EM_Ele = 0, L13_EM_Pos = 0;
+                        L14_EM_Ele = 0, L14_EM_Pos = 0;
+                        L23_EM_Ele = 0, L23_EM_Pos = 0;
+                        L24_EM_Ele = 0, L24_EM_Pos = 0;
+                        L34_EM_Ele = 0, L34_EM_Pos = 0;
+
+                        // skip only if both _pass_Ele and _pass_Pos are 0 i.e., both electron and positron signal window are not satisfied
+
+                        if( *first_hit == 1 && *second_hit == 2 ){ // for efficiency counting  !!caution of the position of this codition
+
+                          TriggeringWith_1st2ndPixel_v2(k,i);
+
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         }
+                        }
+
+                        if( *first_hit == 1 && *second_hit == 3 ){ // for efficiency counting  !!caution of the position of this codition
+
+                          TriggeringWith_1st3rdPixel_v2(k,i);
+
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         }
+                        }
+
+                        if( *first_hit == 1 && *second_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+
+                          TriggeringWith_1st4thPixel_v2(k,i);
+
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         }
+                        }
+
+
+                        if( *first_hit == 2 && *second_hit == 3 ){ // for efficiency counting  !!caution of the position of this codition
+
+                          TriggeringWith_2nd3rdPixel_v2(k,i);
+
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }   
+                         }    
+                        }
+                         
+                        if( *first_hit == 3 && *second_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                         
+                          TriggeringWith_3rd4thPixel_v2(k,i);
+                          
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         } 
+                        }
+
+                       if( _pass_Ele == 1 || _pass_Pos == 1) { pass_count = 1;}
+                   } // loop for second layer hits       
+                 } // loop for first layer hits
+
+        }
+      }
+     }  
+
+      if(PixTrkFourHits){
+         PiXTRKbit_4Hits_ = PiXTRKbit_4Hits_| (bit1 << nth_eg_pix_deta);
+      } 
+ 
+      if( pass_count ){
+          trigger_bit_width_ = trigger_bit_width_| (bit1 << nth_eg_pix_deta);
+      }
+
+      global_index_width++; // remove this variable
+      }
+
+      trigger_bit_width.push_back(trigger_bit_width_);
+      trigger_4Hits_bit_width.push_back(PiXTRKbit_4Hits_);
+
+      // remove 
+      if( pass_count ){ 
+          ntCl_match.push_back(true);
+          all_cut_pass_eg = 1; 
+      }
+      else ntCl_match.push_back(false);
+
+      if( pass_count_wo4thPix ){
+          ntCl_match_wo4thPix.push_back(true);
+      }
+      else ntCl_match_wo4thPix.push_back(false);
+
+      Npass_woEM_wo4thPix.push_back(woEM_pass_count_wo4thPix);
+      Npass_wEM_wo4thPix.push_back(wEM_pass_count_wo4thPix);
+
+      if( pass_count_wo3thPix ){
+          ntCl_match_wo3thPix.push_back(true);
+      }
+      else ntCl_match_wo3thPix.push_back(false);
+
+      Npass_woEM_wo3thPix.push_back(woEM_pass_count_wo3thPix);
+      Npass_wEM_wo3thPix.push_back(wEM_pass_count_wo3thPix);
+
+      if( pass_count_wo2thPix ){
+          ntCl_match_wo2thPix.push_back(true);
+      }
+      else ntCl_match_wo2thPix.push_back(false);
+
+      Npass_woEM_wo2thPix.push_back(woEM_pass_count_wo2thPix);
+      Npass_wEM_wo2thPix.push_back(wEM_pass_count_wo2thPix);
+
+      if( pass_count_wo1thPix ){
+          ntCl_match_wo1thPix.push_back(true);
+      }
+      else ntCl_match_wo1thPix.push_back(false);
+
+      Npass_woEM_wo1thPix.push_back(woEM_pass_count_wo1thPix);
+      Npass_wEM_wo1thPix.push_back(wEM_pass_count_wo1thPix);
+
+      if(withoutEM_count_Ele){
+         withoutEM_match.push_back(true);
+      }
+      else withoutEM_match.push_back(false);
+
+      if(withEM_count_Ele){
+         withEM_match.push_back(true);
+      }
+      else withEM_match.push_back(false);
+      // remove since this was just for only one signal window width
+
+         /////////////////////////////////
+         //
+  } // end of egamma loop    
+
+     // find egamma objects (HGCAL) passing pixtrk signal windows
+     for( int q=0; q<cl3d_n; q++){ 
+
+      if(cl3d_coreshowerlength->at(q) < 3 || cl3d_coreshowerlength->at(q) > 18) continue;
+      if(cl3d_srrtot->at(q) < 0.002 || cl3d_srrtot->at(q) > 0.005) continue;
+      if(cl3d_maxlayer->at(q) < 8 || cl3d_maxlayer->at(q) > 20) continue;
+      if(cl3d_firstlayer->at(q) > 5) continue;
+
+      EgEt =cl3d_pt ->at(q);
+      EgEta=cl3d_eta->at(q);
+      EgPhi=cl3d_phi->at(q);
+
+      float EgGx = cl3d_x->at(q);
+      float EgGy = cl3d_y->at(q);
+      float EgGz = cl3d_z->at(q);
+      emvector.SetXYZ(EgGx,EgGy,EgGz);
+
+      if(EgEt < 8) continue;
+
+      eta_region = 0; // initialize variable 
+      if( fabs(EgEta) <= 0.8 ) eta_region =1;
+      if( fabs(EgEta) <= 1.4 && fabs(EgEta) > 0.8 ) eta_region =2;
+      if( fabs(EgEta) <= 1.8 && fabs(EgEta) > 1.4 ) eta_region =3;
+      if( fabs(EgEta) <= 2.7 && fabs(EgEta) > 1.8 ) eta_region =4;
+      if( fabs(EgEta) <= 3.0 && fabs(EgEta) > 2.7 ) eta_region =5;
+      if( fabs(EgEta) > 3. ) continue;
+
+      pass_egobjects_check = 1;
+      ntnEg2++;
+      ntEgEt.push_back(EgEt);
+      ntEgEta.push_back(EgEta);
+      
+      // set regin of interest
+      // for η < 1.3, Δφ < 0.05 
+      //if(eta_region==1)SetROI(2); 
+      //else SetROI(eta_region);
+      //SetROI(1);
+
+      SetROI(eta_region);
+
+      // initialize pixel hit variables
+      first_layer_hits.clear();
+      second_layer_hits.clear();
+      third_layer_hits.clear();
+      fourth_layer_hits.clear();
+
+      first_layer_hits_Ele_or_Pos.clear();
+      second_layer_hits_Ele_or_Pos.clear();
+      third_layer_hits_Ele_or_Pos.clear();
+      fourth_layer_hits_Ele_or_Pos.clear();
+      hitted_layers.clear();
+      
+      layers[0] = 1; // beam spot
+      layers[1] = 0; layers[2] = 0; layers[3] = 0; layers[4] = 0;
+      r = 0;
+      StorePixelHit(eta_region); // save pixel hits in Region of Interest for the given eta region
+
+      bool isFourHits = true;
+      // check which pixel has hits
+       for( int i=1; i < 5; i++){
+          if( layers[i] != 0 ){
+            hitted_layers.push_back(i);
+          }
+          else{
+              isFourHits = false;
+          }
+       }
+   
+       // set pixtrk signal boundary
+       //
+       int global_index_width = 0;
+       trigger_bit_width_ = 0x0;
+       PiXTRKbit_4Hits_ = 0x0; 
+
+       for(int nth_eg_pix_deta = 0; nth_eg_pix_deta < 9; nth_eg_pix_deta++){
+       if(nth_eg_pix_deta != 0) continue;
+
+       //SetSingalBoundary(eta_region);
+       if(eta_region == 1) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta], EM_PiX_deta_width_[nth_eg_pix_deta], PiX_PiX_dphi_width_[nth_eg_pix_deta], PiX_PiX_deta_width_[nth_eg_pix_deta]);
+       else if(eta_region == 2) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta+1], EM_PiX_deta_width_[nth_eg_pix_deta+1], PiX_PiX_dphi_width_[nth_eg_pix_deta+1], PiX_PiX_deta_width_[nth_eg_pix_deta+1]);
+       //if(eta_region >= 2) SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta+1], EM_PiX_deta_width_[nth_eg_pix_deta+1], PiX_PiX_dphi_width_[nth_eg_pix_deta+1], PiX_PiX_deta_width_[nth_eg_pix_deta+1]);
+       else SetSingalBoundary(eta_region, EM_PiX_dphi_width_[nth_eg_pix_deta], EM_PiX_deta_width_[nth_eg_pix_deta], PiX_PiX_dphi_width_[nth_eg_pix_deta], PiX_PiX_deta_width_[nth_eg_pix_deta]);
+
+       // PixTRK algorithm 
+       pass_count = 0;
+       pass_count_wo4thPix = 0, pass_count_wo3thPix = 0, pass_count_wo2thPix = 0, pass_count_wo1thPix = 0;
+       woEM_pass_count_wo4thPix = 0, woEM_pass_count_wo3thPix = 0, woEM_pass_count_wo2thPix = 0, woEM_pass_count_wo1thPix = 0;
+       wEM_pass_count_wo4thPix = 0, wEM_pass_count_wo3thPix = 0, wEM_pass_count_wo2thPix = 0, wEM_pass_count_wo1thPix = 0;
+       withoutEM_count_Ele = 0, withEM_count_Ele = 0;
+
+       fourth_layer_missing = 0;
+       third_layer_missing = 0;
+       second_layer_missing = 0;
+       first_layer_missing = 0;
 
        // loop over every 3 out of 4 pixel combination 
        for( std::vector<int>::iterator first_hit = hitted_layers.begin(); first_hit != hitted_layers.end(); first_hit++){
@@ -559,15 +1059,108 @@ void test::Loop()
 
                  pass_Ele.push_back(pass_count_Ele);
                  pass_Pos.push_back(pass_count_Pos);
-                 pass_ElePos.push_back(pass_count_EleorPos);
+                 pass_ElePos.push_back(pass_count_EleorPos); // FIXME: save information on pixel combination for example to see if an event is passed if only L123 is passed or all L123, 124, 134, 234 is passed etc. bit can be used to save these information.
           }          
         }
       }
 
-      if(PixTrkFourHits){
-         PiXTRKbit_4Hits_ = PiXTRKbit_4Hits_| (bit1 << nth_eg_pix_deta);
-      } 
- 
+     if( eta_region == 2 && pass_count == false) {
+       for( std::vector<int>::iterator first_hit = hitted_layers.begin(); first_hit != hitted_layers.end(); first_hit++){
+          for ( std::vector<int>::iterator second_hit = first_hit+1; second_hit != hitted_layers.end(); second_hit++){
+                 
+                 // loop over every pixel hits in the given pixel combination
+                 for( int k=0; k < layers[*first_hit]; k++){
+                    for( int i=0; i < layers[*second_hit]; i++){
+                        _pass_Ele = 0, _pass_Pos = 0;
+
+                        L012_pass_Ele = 0, L012_pass_Pos = 0;
+                        L013_pass_Ele = 0, L013_pass_Pos = 0;
+                        L014_pass_Ele = 0, L014_pass_Pos = 0;
+                        L023_pass_Ele = 0, L023_pass_Pos = 0;
+                        L024_pass_Ele = 0, L024_pass_Pos = 0;
+                        L034_pass_Ele = 0, L034_pass_Pos = 0;
+                        L123_pass_Ele = 0, L123_pass_Pos = 0;
+                        L124_pass_Ele = 0, L124_pass_Pos = 0;
+                        L134_pass_Ele = 0, L134_pass_Pos = 0;
+                        L234_pass_Ele = 0, L234_pass_Pos = 0;
+
+                        L12_EM_Ele = 0, L12_EM_Pos = 0;
+                        L13_EM_Ele = 0, L13_EM_Pos = 0;
+                        L14_EM_Ele = 0, L14_EM_Pos = 0;
+                        L23_EM_Ele = 0, L23_EM_Pos = 0;
+                        L24_EM_Ele = 0, L24_EM_Pos = 0;
+                        L34_EM_Ele = 0, L34_EM_Pos = 0;
+
+                        // skip only if both _pass_Ele and _pass_Pos are 0 i.e., both electron and positron signal window are not satisfied
+
+                        if( *first_hit == 1 && *second_hit == 2 ){ // for efficiency counting  !!caution of the position of this codition
+
+                          TriggeringWith_1st2ndPixel_v2(k,i); 
+
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+            		    k = layers[*first_hit];
+                            i = layers[*second_hit];
+                   	   }
+                         }
+                        }
+
+                        if( *first_hit == 1 && *second_hit == 3 ){ // for efficiency counting  !!caution of the position of this codition
+                        
+                          TriggeringWith_1st3rdPixel_v2(k,i);
+                          
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         } 
+                        }
+
+                        if( *first_hit == 1 && *second_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                        
+                          TriggeringWith_1st4thPixel_v2(k,i);
+                          
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         } 
+                        }
+
+                        if( *first_hit == 2 && *second_hit == 3 ){ // for efficiency counting  !!caution of the position of this codition
+                        
+                          TriggeringWith_2nd3rdPixel_v2(k,i);
+                          
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         } 
+                        }
+
+                        if( *first_hit == 3 && *second_hit == 4 ){ // for efficiency counting  !!caution of the position of this codition
+                        
+                          TriggeringWith_3rd4thPixel_v2(k,i);
+                          
+                          if(skip){
+                          if( _pass_Ele == 1 || _pass_Pos == 1 ){ // if pass exit loop
+                            k = layers[*first_hit];
+                            i = layers[*second_hit];
+                           }
+                         } 
+                        }
+
+                       if( _pass_Ele == 1 || _pass_Pos == 1) { pass_count = 1;}
+                   } // loop for second layer hits       
+                 } // loop for first layer hits
+
+        }
+      }
+     }
+
       if( pass_count ){
           trigger_bit_width_ = trigger_bit_width_| (bit1 << nth_eg_pix_deta);
       }
@@ -628,7 +1221,8 @@ void test::Loop()
 
          /////////////////////////////////
          //
-  } // end of egamma loop    
+  } // end of egamma loop  
+
   if(pass_egobjects_check){ event_denominator = 1; FillCutFlow("EvtCut", 1.);}
   if(all_cut_pass_eg) event_nominator = 1; 
      pixtrk_tree->Fill();

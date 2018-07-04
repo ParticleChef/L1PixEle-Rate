@@ -28,7 +28,7 @@
 
 #include "../../withEM_SingleCrys_900pre6_v2.h"
 #include "../../withoutEM_SingleCrys_900pre6.h"
-#include "../../RegionOfInterest.h"
+#include "../../RegionOfInterest_.h"
 
 using namespace std;
 class test {
@@ -93,6 +93,19 @@ public :
    vector<float>   *egCrysGy;
    vector<float>   *egCrysGz;
    vector<int>     *egCrysCharge;
+   Int_t           cl3d_n;
+   vector<float>   *cl3d_pt;
+   vector<float>   *cl3d_energy;
+   vector<float>   *cl3d_eta;
+   vector<float>   *cl3d_phi;
+   vector<int>     *cl3d_nclu;
+   vector<float>   *cl3d_x;
+   vector<float>   *cl3d_y;
+   vector<int>     *cl3d_z;
+   vector<int>     *cl3d_coreshowerlength;
+   vector<float>   *cl3d_srrtot;
+   vector<int>     *cl3d_maxlayer;
+   vector<int>     *cl3d_firstlayer;
    Int_t           l1tkegN;
    vector<float>   *l1tkegEt;
    vector<float>   *l1tkegEta;
@@ -198,6 +211,19 @@ public :
    TBranch        *b_egCrysGy;   //!
    TBranch        *b_egCrysGz;   //!
    TBranch        *b_egCrysCharge;   //!
+   TBranch        *b_cl3d_n;   //!
+   TBranch        *b_cl3d_pt;   //!
+   TBranch        *b_cl3d_energy;   //!
+   TBranch        *b_cl3d_eta;   //!
+   TBranch        *b_cl3d_phi;   //!
+   TBranch        *b_cl3d_nclu;   //!
+   TBranch        *b_cl3d_x;   //!
+   TBranch        *b_cl3d_y;   //!
+   TBranch        *b_cl3d_z;   //!
+   TBranch        *b_cl3d_coreshowerlength;
+   TBranch        *b_cl3d_srrtot;
+   TBranch        *b_cl3d_maxlayer;
+   TBranch        *b_cl3d_firstlayer;
    TBranch        *b_l1tkegN;   //!
    TBranch        *b_l1tkegEt;   //!
    TBranch        *b_l1tkegEta;   //!
@@ -399,6 +425,13 @@ public :
    void TriggeringWithout_3rdPixel(int nthFirstHit, int nthSecondHit, int nthThirdHit);
    void TriggeringWithout_2ndPixel(int nthFirstHit, int nthSecondHit, int nthThirdHit);
    void TriggeringWithout_1stPixel(int nthFirstHit, int nthSecondHit, int nthThirdHit);
+
+   void TriggeringWith_1st2ndPixel_v2(int nthFirstHit, int nthSecondHit);
+   void TriggeringWith_1st3rdPixel_v2(int nthFirstHit, int nthSecondHit);
+   void TriggeringWith_1st4thPixel_v2(int nthFirstHit, int nthSecondHit);
+   void TriggeringWith_2nd3rdPixel_v2(int nthFirstHit, int nthSecondHit);
+   void TriggeringWith_2nd4thPixel_v2(int nthFirstHit, int nthSecondHit);
+   void TriggeringWith_3rd4thPixel_v2(int nthFirstHit, int nthSecondHit);
 
    inline float deltaPhi(float phi1, float phi2){
      float result = phi1 - phi2;
@@ -621,6 +654,18 @@ void test::Init(TTree *tree)
    egCrysGy = 0;
    egCrysGz = 0;
    egCrysCharge = 0;
+   cl3d_pt = 0;
+   cl3d_energy = 0;
+   cl3d_eta = 0;
+   cl3d_phi = 0;
+   cl3d_nclu = 0;
+   cl3d_x = 0;
+   cl3d_y = 0;
+   cl3d_z = 0;
+   cl3d_coreshowerlength = 0;
+   cl3d_srrtot = 0;
+   cl3d_maxlayer = 0;
+   cl3d_firstlayer = 0;
    egE = 0;
    egEt = 0;
    egEta = 0;
@@ -718,6 +763,19 @@ void test::Init(TTree *tree)
    fChain->SetBranchAddress("egCrysGy", &egCrysGy, &b_egCrysGy);
    fChain->SetBranchAddress("egCrysGz", &egCrysGz, &b_egCrysGz);
 //   fChain->SetBranchAddress("egCrysCharge", &egCrysCharge, &b_egCrysCharge);
+   fChain->SetBranchAddress("cl3d_n", &cl3d_n, &b_cl3d_n);
+   fChain->SetBranchAddress("cl3d_pt", &cl3d_pt, &b_cl3d_pt);
+   fChain->SetBranchAddress("cl3d_energy", &cl3d_energy, &b_cl3d_energy);
+   fChain->SetBranchAddress("cl3d_eta", &cl3d_eta, &b_cl3d_eta);
+   fChain->SetBranchAddress("cl3d_phi", &cl3d_phi, &b_cl3d_phi);
+   fChain->SetBranchAddress("cl3d_nclu", &cl3d_nclu, &b_cl3d_nclu);
+   fChain->SetBranchAddress("cl3d_x", &cl3d_x, &b_cl3d_x);
+   fChain->SetBranchAddress("cl3d_y", &cl3d_y, &b_cl3d_y);
+   fChain->SetBranchAddress("cl3d_z", &cl3d_z, &b_cl3d_z);
+   fChain->SetBranchAddress("cl3d_coreshowerlength", &cl3d_coreshowerlength, &b_cl3d_coreshowerlength);
+   fChain->SetBranchAddress("cl3d_srrtot", &cl3d_srrtot, &b_cl3d_srrtot);
+   fChain->SetBranchAddress("cl3d_maxlayer", &cl3d_maxlayer, &b_cl3d_maxlayer);
+   fChain->SetBranchAddress("cl3d_firstlayer", &cl3d_firstlayer, &b_cl3d_firstlayer);
    fChain->SetBranchAddress("egHoE", &egHoE, &b_egHoE);
    fChain->SetBranchAddress("clusterHoE", &clusterHoE, &b_clusterHoE);
    fChain->SetBranchAddress("seedHoE", &seedHoE, &b_seedHoE);
@@ -1133,21 +1191,54 @@ void test::StorePixelHit( int region){
 
 }
 
+//void test::SetROI(int region){
+//
+//    L1_Dphi_cut1 = ROI_func( EgEt, region, 0, 0);
+//    L1_Dphi_cut2 = ROI_func( EgEt, region, 0, 1);
+//
+//    L2_Dphi_cut1 = ROI_func( EgEt, region, 1, 0);
+//    L2_Dphi_cut2 = ROI_func( EgEt, region, 1, 1);
+//
+//    L3_Dphi_cut1 = ROI_func( EgEt, region, 2, 0);
+//    L3_Dphi_cut2 = ROI_func( EgEt, region, 2, 1);
+//
+//    L4_Dphi_cut1 = ROI_func( EgEt, region, 3, 0);
+//    L4_Dphi_cut2 = ROI_func( EgEt, region, 3, 1);
+//
+//}
+
 void test::SetROI(int region){
 
-    L1_Dphi_cut1 = ROI_func( EgEt, region, 0, 0);
-    L1_Dphi_cut2 = ROI_func( EgEt, region, 0, 1);
 
-    L2_Dphi_cut1 = ROI_func( EgEt, region, 1, 0);
-    L2_Dphi_cut2 = ROI_func( EgEt, region, 1, 1);
+  float upper_width = 0.055;
+  float lower_width = 0.055;
 
-    L3_Dphi_cut1 = ROI_func( EgEt, region, 2, 0);
-    L3_Dphi_cut2 = ROI_func( EgEt, region, 2, 1);
+  L1_Dphi_cut1 = ROI_func(region, EgEt);
+  L1_Dphi_cut2 = ROI_func(region, EgEt);
 
-    L4_Dphi_cut1 = ROI_func( EgEt, region, 3, 0);
-    L4_Dphi_cut2 = ROI_func( EgEt, region, 3, 1);
+  L1_Dphi_cut1 = L1_Dphi_cut1 + upper_width;
+  L1_Dphi_cut2 = L1_Dphi_cut2 - lower_width;
+
+  L2_Dphi_cut1 = ROI_func(region, EgEt);
+  L2_Dphi_cut2 = ROI_func(region, EgEt);
+
+  L2_Dphi_cut1 = L2_Dphi_cut1 + upper_width;
+  L2_Dphi_cut2 = L2_Dphi_cut2 - lower_width;
+
+  L3_Dphi_cut1 = ROI_func(region, EgEt);
+  L3_Dphi_cut2 = ROI_func(region, EgEt);
+
+  L3_Dphi_cut1 = L3_Dphi_cut1 + upper_width;
+  L3_Dphi_cut2 = L3_Dphi_cut2 - lower_width;
+
+  L4_Dphi_cut1 = ROI_func(region, EgEt);
+  L4_Dphi_cut2 = ROI_func(region, EgEt);
+
+  L4_Dphi_cut1 = L4_Dphi_cut1 + upper_width;
+  L4_Dphi_cut2 = L4_Dphi_cut2 - lower_width;
 
 }
+
 
 void test::SetSingalBoundary(int region, double eg_dphi, double eg_deta, double sa_dphi, double sa_deta){
 
@@ -1638,6 +1729,134 @@ L023_pass_Pos = Signal_window_check( L023_DPhi_cut1, dPhi023, L023_DPhi_cut2, Po
      (third_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
 
 }
+
+void test::TriggeringWith_1st2ndPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi012 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L012_pass_Ele = Signal_window_check( L012_DPhi_cut1, dPhi012, L012_DPhi_cut2, Ele );
+L012_pass_Pos = Signal_window_check( L012_DPhi_cut1, dPhi012, L012_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(first_layer_hits[nthFirstHit], second_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(first_layer_hits[nthFirstHit], second_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L12_phi_upper, dPhi_1, L12_phi_bellow, Ele) && Signal_window_check(L12_eta_upper, dEta_1, L12_eta_bellow, Ele)  )
+   L12_EM_Ele = 1;
+if( Signal_window_check(L12_phi_upper, dPhi_1, L12_phi_bellow, Pos) && Signal_window_check(L12_eta_upper, dEta_1, L12_eta_bellow, Ele)  )
+   L12_EM_Pos = 1;
+
+if( L012_pass_Ele && L12_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (second_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || second_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L012_pass_Pos && L12_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (second_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || second_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+void test::TriggeringWith_1st3rdPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi013 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L013_pass_Ele = Signal_window_check( L013_DPhi_cut1, dPhi013, L013_DPhi_cut2, Ele );
+L013_pass_Pos = Signal_window_check( L013_DPhi_cut1, dPhi013, L013_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(first_layer_hits[nthFirstHit], third_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(first_layer_hits[nthFirstHit], third_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L13_phi_upper, dPhi_1, L13_phi_bellow, Ele) && Signal_window_check(L13_eta_upper, dEta_1, L13_eta_bellow, Ele)  )
+   L13_EM_Ele = 1;
+if( Signal_window_check(L13_phi_upper, dPhi_1, L13_phi_bellow, Pos) && Signal_window_check(L13_eta_upper, dEta_1, L13_eta_bellow, Ele)  )
+   L13_EM_Pos = 1;
+
+if( L013_pass_Ele && L13_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L013_pass_Pos && L13_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+void test::TriggeringWith_1st4thPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi014 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L014_pass_Ele = Signal_window_check( L014_DPhi_cut1, dPhi014, L014_DPhi_cut2, Ele );
+L014_pass_Pos = Signal_window_check( L014_DPhi_cut1, dPhi014, L014_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(first_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(first_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L14_phi_upper, dPhi_1, L14_phi_bellow, Ele) && Signal_window_check(L14_eta_upper, dEta_1, L14_eta_bellow, Ele)  )
+   L14_EM_Ele = 1;
+if( Signal_window_check(L14_phi_upper, dPhi_1, L14_phi_bellow, Pos) && Signal_window_check(L14_eta_upper, dEta_1, L14_eta_bellow, Ele)  )
+   L14_EM_Pos = 1;
+
+if( L014_pass_Ele && L14_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (fourth_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || fourth_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L014_pass_Pos && L14_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (fourth_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || fourth_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+void test::TriggeringWith_2nd3rdPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi023 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L023_pass_Ele = Signal_window_check( L023_DPhi_cut1, dPhi023, L023_DPhi_cut2, Ele );
+L023_pass_Pos = Signal_window_check( L023_DPhi_cut1, dPhi023, L023_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(second_layer_hits[nthFirstHit], third_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(second_layer_hits[nthFirstHit], third_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L23_phi_upper, dPhi_1, L23_phi_bellow, Ele) && Signal_window_check(L23_eta_upper, dEta_1, L23_eta_bellow, Ele)  )
+   L23_EM_Ele = 1;
+if( Signal_window_check(L23_phi_upper, dPhi_1, L23_phi_bellow, Pos) && Signal_window_check(L23_eta_upper, dEta_1, L23_eta_bellow, Ele)  )
+   L23_EM_Pos = 1;
+
+if( L023_pass_Ele && L23_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L023_pass_Pos && L23_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+void test::TriggeringWith_2nd4thPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi024 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L024_pass_Ele = Signal_window_check( L024_DPhi_cut1, dPhi024, L024_DPhi_cut2, Ele );
+L024_pass_Pos = Signal_window_check( L024_DPhi_cut1, dPhi024, L024_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(second_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(second_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L24_phi_upper, dPhi_1, L24_phi_bellow, Ele) && Signal_window_check(L24_eta_upper, dEta_1, L24_eta_bellow, Ele)  )
+   L24_EM_Ele = 1;
+if( Signal_window_check(L24_phi_upper, dPhi_1, L24_phi_bellow, Pos) && Signal_window_check(L24_eta_upper, dEta_1, L24_eta_bellow, Ele)  )
+   L24_EM_Pos = 1;
+
+if( L024_pass_Ele && L24_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L024_pass_Pos && L24_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+void test::TriggeringWith_3rd4thPixel_v2(int nthFirstHit, int nthSecondHit){
+dPhi034 = StandaloneDPhi( 0, 1, 2, 0, nthFirstHit, nthSecondHit );
+L034_pass_Ele = Signal_window_check( L034_DPhi_cut1, dPhi034, L034_DPhi_cut2, Ele );
+L034_pass_Pos = Signal_window_check( L034_DPhi_cut1, dPhi034, L034_DPhi_cut2, Pos );
+
+dPhi_1 = EMmatchingDPhi(third_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+dEta_1 = EMmatchingDEta(third_layer_hits[nthFirstHit], fourth_layer_hits[nthSecondHit], emvector);
+
+if( Signal_window_check(L34_phi_upper, dPhi_1, L34_phi_bellow, Ele) && Signal_window_check(L34_eta_upper, dEta_1, L34_eta_bellow, Ele)  )
+   L34_EM_Ele = 1;
+if( Signal_window_check(L34_phi_upper, dPhi_1, L34_phi_bellow, Pos) && Signal_window_check(L34_eta_upper, dEta_1, L34_eta_bellow, Ele)  )
+   L34_EM_Pos = 1;
+
+if( L034_pass_Ele && L34_EM_Ele &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 1 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 1 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Ele = 1;
+if( L034_pass_Pos && L34_EM_Pos &&
+    (first_layer_hits_Ele_or_Pos[nthFirstHit] == 2 || first_layer_hits_Ele_or_Pos[nthFirstHit] ==3) &&
+    (third_layer_hits_Ele_or_Pos[nthSecondHit] == 2 || third_layer_hits_Ele_or_Pos[nthSecondHit] ==3)) _pass_Pos = 1;
+}
+
+
 
 #endif // #ifdef test_cxx
 
