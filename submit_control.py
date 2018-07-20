@@ -5,18 +5,28 @@ timeWait=1
 
 import os, getpass, sys
 from batch_script import *
+from batch_jds_script import *
 
 def now():
     from datetime import datetime
     return str(datetime.now().month) + str(datetime.now().day)+ str(datetime.now().hour)+str(datetime.now().minute)
 
 #sample = "Minbias_PU140"
-sample = "Minbias_PU200"
+sample = "MinBias_PU200"
 #InputDir = "/data7/Users/jhkim/PhaseIISpring17D/Ntuple_Minbias140PU/PhaseIISpring17D_Minbias"
 #InputDir = "/data7/Users/jhkim/PhaseIISpring17D/Ntuple_Minbias200PU"
-InputDir = "/data7/Users/jhkim/PhaseIIFall17D/SingleNeutrino_200PU"
+#InputDir = "/data7/Users/jhkim/PhaseIIFall17D/SingleNeutrino_200PU"
+InputDir = "/xrootd/store/user/jhkim/L1Pixel/MinBias_PU200"
 
-os.system("ls " + InputDir + "/*.root > " + "./inputlist.txt") # read input root files 
+#os.system("ls " + InputDir + "/*.root > " + "./inputlist.txt") # read input root files 
+txtfile = open("./inputlist.txt",'r')
+lines = txtfile.readlines()
+writefile = open("./inputlist_my.txt",'w')
+for line in lines:
+    writefile.write("root://cms-xrdr.sdfarm.kr:1094//xrd/store/user/jhkim/L1Pixel/MinBias_PU200/" + line)
+
+txtfile.close()
+writefile.close()
 
 if not os.path.exists("job_output"):
     os.system("mkdir job_output/")
@@ -35,7 +45,7 @@ number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir
 
 print "Job has " + str(number_of_files) + " files to process:"
 
-number_of_cores = 120 
+number_of_cores = 622 
 
 # determine the # of files per job
 nfilesperjobs= 0
@@ -68,7 +78,7 @@ check_array = []
 ###################################################
 # Setup work area on var tmp
 ###################################################
-workspace = "/home/"+ getpass.getuser() + "/Pixel/rate_v2/"
+workspace = "/cms/ldap_home/jongho/L1PixelTrigger/L1PixEle-cmssw9/Minbias/L1PixEle-Rate/Results/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
@@ -112,14 +122,17 @@ for i in range(1,number_of_cores+1):
             batchconfigfile=open(batchcfgfile,'w')
             batchconfigfile.write(makeBatchConfigFile(output + "Job_" + str(i) + "/"))
             batchconfigfile.close()
+            
+            batchjdsfile = output + "Job_" + str(i) + "/" + "run.jds"
+            batchconfigjdsfile=open(batchjdsfile,'w')
+            batchconfigjdsfile.write(makeBatchConfigjdsFile(output + "Job_" + str(i) + "/"))
+            batchconfigjdsfile.close()
 
             if i==1:
                print "making sub work directories " + printedworkdir
 
-
-
-
-fr = open('./inputlist.txt', 'r')
+#fr = open('./inputlist.txt', 'r')
+fr = open('./inputlist_my.txt', 'r')
 outsamplename = sample
 
 # find . -name 'test.h' -type f -exec sed -i s/PU140_2.txt/\"PU140_2.txt\"/g {} +
@@ -247,12 +260,14 @@ for i in range(1,number_of_cores+1):
     script_path = output+ "Job_" + str(i)
     #runcommand = "./run.sh"
     #runcommand = "qsub -q \"fastq@cms-0-3.local,fastq@cms-0-4.local,fastq@cms-0-5.local,fastq@cms-0-6.local\" run.sh"
-    runcommand = "qsub -q \"longq@cms-0-1.local,longq@cms-0-2.local\" run.sh"
+    #runcommand = "qsub -q \"longq@cms-0-1.local,longq@cms-0-2.local\" run.sh"
+    runcommand = "condor_submit run.jds"
     if number_of_cores == 1:
         print "Running single job " 
         #runcommand = "./run.sh"
         #runcommand = "qsub -q \"fastq@cms-0-3.local,fastq@cms-0-4.local,fastq@cms-0-5.local,fastq@cms-0-6.local\" run.sh"
-        runcommand = "qsub -q \"longq@cms-0-1.local,longq@cms-0-2.local\" run.sh"
+        #runcommand = "qsub -q \"longq@cms-0-1.local,longq@cms-0-2.local\" run.sh"
+        runcommand = "condor_submit run.jds"
         os.chdir(script_path)
         os.system(runcommand)
         os.chdir(workspace)
